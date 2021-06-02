@@ -1,25 +1,67 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends React.Component {
+
+  state = {
+    error: null,
+    isLoaded: false,
+    items: []
+  }
+
+  componentDidMount(){
+    console.log('componentDidMount');
+
+    fetch('https://dekpo.herokuapp.com/posts/')
+    .then(response => response.json())
+    .then(
+      data => {
+        this.setState({
+          isLoaded: true,
+          items: data
+        })
+        console.log( 'Fetch success', data)
+      },
+      error => {
+        this.setState({
+          error: error
+        })
+        console.log(error)
+      }
+      )
+  }
+
+  render(){
+    const { error, isLoaded, items } = this.state;
+
+    if (error){
+      return(
+        <div> ERROR</div>
+      )
+    } else if (!isLoaded) {
+      return(
+        <div> Chargement en cours </div>
+      )
+    } else {
+      return(
+        items.map( item => (
+          <article key={item._id}>
+            {
+              (() => {
+                if (item.img) {
+                  return(
+                    <img src={"https://dekpo.herokuapp.com/posts/" + item._img} alt={item.title} />
+                  )
+                }
+              })()
+            }
+            <h2>{item.title}</h2>
+            <p>{item.text}</p>
+          </article>
+        ))
+      )
+    }
+  }
+
 }
 
 export default App;
