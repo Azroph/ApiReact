@@ -8,8 +8,8 @@ const Like = () => {
   useEffect(()=>{
     if (count>0) console.log(`you liked ${count} times`)
     if (count===20){
-    alert("stop")
-    setDisplay(false)
+      alert("stop")
+      setDisplay(false)
     }
   },[count])
 
@@ -22,6 +22,34 @@ const Like = () => {
     <button onClick={()=>setCount(count+1)}>{count} Like </button><br />
     <button onClick={()=>setLike(!liked)}>{liked.toString()} Liked </button>
     </>
+  )
+}
+
+const Form = ({id}) => {
+
+  const handleSubmit = (e) => {
+    e.prenventDefault()
+    console.log(e.target.text.value)
+    console.log('texte du comment',e.target.text.value)
+
+    fetch('http://localhost:8888/form', {
+    method: 'post',
+    cors: 'no-cors',
+    body: JSON.stringify(e.target.text.value)
+  })
+  .then(response=>response.json())
+  .then(data=>{
+    console.log(data)
+  })
+    e.target.reset()
+  }
+
+  return(
+    <form onSubmit={(e)=>handleSubmit(e)}>
+      <input type="text" name="text"/>
+      <input type="hidden" name={id} value={id}/>
+      <input type="submit" value="comment"/>
+    </form>
   )
 }
 
@@ -82,6 +110,7 @@ class App extends React.Component {
             }
           <h2>{item.title}</h2>
           <p>{item.text}</p>
+          <Form id={item._id}/>
           </article>
         ))
       )
