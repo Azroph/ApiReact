@@ -1,4 +1,29 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+
+const Like = () => {
+  const [count,setCount] = useState(0)
+  const [liked,setLike] = useState(false)
+  const [display,setDisplay] = useState(true)
+
+  useEffect(()=>{
+    if (count>0) console.log(`you liked ${count} times`)
+    if (count===20){
+    alert("stop")
+    setDisplay(false)
+    }
+  },[count])
+
+  useEffect(()=>{
+   if (liked) console.log(`you liked ${liked.toString()} times`)
+  },[liked])
+
+  return(
+    <>
+    <button onClick={()=>setCount(count+1)}>{count} Like </button><br />
+    <button onClick={()=>setLike(!liked)}>{liked.toString()} Liked </button>
+    </>
+  )
+}
 
 class App extends React.Component {
 
@@ -45,6 +70,7 @@ class App extends React.Component {
       return (
         items.map(item => (
           <article key={item._id}>
+            <p><Like/></p>
             {
             (() => {
               if (item.img) {
